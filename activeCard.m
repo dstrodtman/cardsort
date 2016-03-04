@@ -16,6 +16,11 @@ if sum(buttons) > 0 && offsetSet == 0
     dx = mx - cx;
     dy = my - cy;
     offsetSet = 1;
+    % Increment click counter
+    cardData{2, cardnum} = cardData{2, cardnum} + 1;
+    Click = cardData{2, cardnum};
+    %Record start time
+    cardData{3, cardnum}(Click, 1) = GetSecs;
 end
 
 % If we are clicking on the card allow its position to be modified by
@@ -28,12 +33,17 @@ end
 
 % Set up a switch for target stimuli to snap to
 if sum(buttons) <= 0 %fixes GPU complaints
-    for ii = 1:tarNum
-        if IsInRect(sx, sy, target{ii})
-            [tcx, tcy] = RectCenter(target{ii});
-            snap = 1;
+    if offsetSet == 1
+        %Record end time
+        cardData{3, cardnum}(Click, 2) = GetSecs;
+        for ii = 1:tarNum
+            if IsInRect(sx, sy, target{ii})
+                [tcx, tcy] = RectCenter(target{ii});
+                snap = 1;
+            end
         end
     end
+    offsetSet = 0; %release offset
 end
 
 switch snap
@@ -57,9 +67,3 @@ Screen('FrameRect', window, .5, card{cardnum}, 5);
 
 % Flip to the screen
 vbl  = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
-
-% Check to see if the mouse button has been released and if so reset
-% the offset cue
-if sum(buttons) <= 0
-    offsetSet = 0;
-end
