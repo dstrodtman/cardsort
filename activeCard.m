@@ -17,10 +17,10 @@ if sum(buttons) > 0 && offsetSet == 0
     dy = my - cy;
     offsetSet = 1;
     % Increment click counter
-    cardData{2, cardnum} = cardData{2, cardnum} + 1;
-    Click = cardData{2, cardnum};
+    stringId{this,8}{2, cardnum} = stringId{this,8}{2, cardnum} + 1;
+    Click = stringId{this,8}{2, cardnum};
     %Record start time
-    cardData{3, cardnum}(Click, 1) = GetSecs;
+    stringId{this,8}{3, cardnum}(Click, 1) = GetSecs;
 end
 
 % If we are clicking on the card allow its position to be modified by
@@ -35,35 +35,49 @@ end
 if sum(buttons) <= 0 %fixes GPU complaints
     if offsetSet == 1
         %Record end time
-        cardData{3, cardnum}(Click, 2) = GetSecs;
-        for ii = 1:tarNum
-            if IsInRect(sx, sy, target{ii})
-                [tcx, tcy] = RectCenter(target{ii});
-                snap = 1;
-            end
+        stringId{this,8}{3, cardnum}(Click, 2) = GetSecs;
+        if IsInRect(sx, sy, stringId{this,6}{activeTar})
+            [tcx, tcy] = RectCenter(stringId{this,6}{activeTar});
+            snap = 1;
         end
+        
     end
     offsetSet = 0; %release offset
 end
 
 switch snap
     case 1
-        card{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
+        stringId{this,7}{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
         snap = 0;
+        activeTar = activeTar + 1;
+        if activeTar > stringId{this,2}
+            complete = 1;
+            activeTar = 0;
+        end
     otherwise
         % Center the rectangle on its new screen position
-        card{cardnum} = CenterRectOnPointd(selected, sx, sy);
+        stringId{this,7}{cardnum} = CenterRectOnPointd(selected, sx, sy);
 end
 
 % Draw to the screen
-Screen('FillRect', window, 1, finalTarRect);
-Screen('FrameRect', window, .5, finalTarRect, 5);
-Screen('FillRect', window, 1, cell2mat(card')');
-Screen('FrameRect', window, .5, cell2mat(card')', 5);
+Screen('FillRect', window, 1, stringId{this,5});
+Screen('FrameRect', window, .5, stringId{this,5}, 5);
+Screen('FillRect', window, 1, cell2mat(stringId{this,7}')');
+Screen('FrameRect', window, .5, cell2mat(stringId{this,7}')', 5);
+
+% Highlight active target
+if activeTar > 0
+    Screen('FrameRect', window, [0 1 0], stringId{this,5}(1:4, activeTar), 5);
+end
+
+if complete
+    Screen('FillRect', window, [1 0 0], [0, 0, 100, 100]);
+    Screen('FrameRect', window, [0 1 0], [0, 0, 100, 100], 5);
+end
 
 % Draw active card again to ensure it is on top
-Screen('FillRect', window, 1, card{cardnum});
-Screen('FrameRect', window, .5, card{cardnum}, 5);
+Screen('FillRect', window, 1, stringId{this,7}{cardnum});
+Screen('FrameRect', window, .5, stringId{this,7}{cardnum}, 5);
 
 % Flip to the screen
 vbl  = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
