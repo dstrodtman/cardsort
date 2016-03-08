@@ -9,11 +9,17 @@ SetMouse(xCenter, yCenter, window);
 % Offset toggle, to prevent square center snapping to mouse.
 offsetSet = 0;
 
+% Set highlight
+highlight = 1;
+
 % Draw stimuli to screen
 Screen('FillRect', window, 1, stringId{this,5});
 Screen('FrameRect', window, .5, stringId{this,5}, 5);
 Screen('FillRect', window, 1, cell2mat(stringId{this,7}')');
 Screen('FrameRect', window, .5, cell2mat(stringId{this,7}')', 5);
+
+% Draw symbols?
+letterDraw;
 
 % Set initial active target to the left
 activeTar = 1;
@@ -41,7 +47,7 @@ while ~complete || ~proceed
     end
     
     % Proceed to next
-    if complete && IsInRect(mx, my, [0. 0, 100, 100]) && sum(buttons) > 0
+    if complete && IsInRect(mx, my, [0, 0, 100, 100]) && sum(buttons) > 0
         proceed = 1;
     end
 end

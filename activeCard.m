@@ -21,6 +21,11 @@ if sum(buttons) > 0 && offsetSet == 0
     Click = stringId{this,8}{2, cardnum};
     %Record start time
     stringId{this,8}{3, cardnum}(Click, 1) = GetSecs;
+    for ii = 1:activeTar
+        if IsInRect(sx, sy, stringId{this,6}{ii})
+            stringId{this,9}{2,ii} = 1;
+        end
+    end
 end
 
 % If we are clicking on the card allow its position to be modified by
@@ -28,7 +33,7 @@ end
 % card and the mouse position
 if sum(buttons) > 0
     sx = mx - dx;
-    sy = my - dy; 
+    sy = my - dy;
 end
 
 % Set up a switch for target stimuli to snap to
@@ -36,11 +41,29 @@ if sum(buttons) <= 0 %fixes GPU complaints
     if offsetSet == 1
         %Record end time
         stringId{this,8}{3, cardnum}(Click, 2) = GetSecs;
-        if IsInRect(sx, sy, stringId{this,6}{activeTar})
+        if IsInRect(sx, sy, stringId{this,6}{activeTar}) && complete == 0
             [tcx, tcy] = RectCenter(stringId{this,6}{activeTar});
             snap = 1;
+            stringId{this,8}{4,cardnum}(1,Click) = activeTar;
+            stringId{this,9}{activeTar} = cardnum;
+            stringId{this,9}{2,activeTar} = 0;
         end
-        
+        % Set up snap for previous targets
+        if activeTar > 1 && snap == 0
+            for ii = 1:(activeTar)
+                if IsInRect(sx, sy, stringId{this,6}{ii})
+                    [tcx, tcy] = RectCenter(stringId{this,6}{ii});
+                    snap = 2;
+                    stringId{this,8}{4,cardnum}(1,Click) = ii;
+                    if stringId{this,9}{1,ii} && stringId{this,9}{2,ii} == 0
+                        stringId{this,7}{stringId{this,9}{1,ii}} = stringId{this,10}{stringId{this,9}{1,ii}};
+                    end
+                    %Add card clearing functionality
+                    stringId{this,9}{1,ii} = cardnum;
+                    stringId{this,9}{2,ii} = 0;
+                end
+            end
+        end
     end
     offsetSet = 0; %release offset
 end
@@ -49,11 +72,15 @@ switch snap
     case 1
         stringId{this,7}{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
         snap = 0;
-        activeTar = activeTar + 1;
-        if activeTar > stringId{this,2}
+        if activeTar < stringId{this,2}
+            activeTar = activeTar + 1;
+        else
+            highlight = 0;
             complete = 1;
-            activeTar = 0;
         end
+    case 2
+        stringId{this,7}{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
+        snap = 0;
     otherwise
         % Center the rectangle on its new screen position
         stringId{this,7}{cardnum} = CenterRectOnPointd(selected, sx, sy);
@@ -62,12 +89,16 @@ end
 % Draw to the screen
 Screen('FillRect', window, 1, stringId{this,5});
 Screen('FrameRect', window, .5, stringId{this,5}, 5);
+% Draw symbols (please?)
+letterDraw;
+
 Screen('FillRect', window, 1, cell2mat(stringId{this,7}')');
 Screen('FrameRect', window, .5, cell2mat(stringId{this,7}')', 5);
 
 % Highlight active target
-if activeTar > 0
-    Screen('FrameRect', window, [0 1 0], stringId{this,5}(1:4, activeTar), 5);
+switch highlight
+    case 1
+        Screen('FrameRect', window, [0 1 0], stringId{this,5}(1:4, activeTar), 5);
 end
 
 if complete
