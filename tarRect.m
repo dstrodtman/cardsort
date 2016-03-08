@@ -1,4 +1,4 @@
-function [tarDims, target] = tarRect(strLength,screenXpixels,yCenter)
+function [tarDims, target, cardOn, centers] = tarRect(strLength,screenXpixels,yCenter)
 
 %This program automatically sets the spacing of targets for each stimuli
 %string and adjusts for their length on any size presentation screen.
@@ -34,16 +34,20 @@ tarDims = rectMat + matShift;
 %Make targets unique entities for hover highlight, locking, and data
 %tracking. Will later communicate with stimuli info.
 
-% Create cell array for cards
+% Create cell array for targets & centers
 target = cell(1, strLength);
+centers = cell(1, strLength);
 
 for ii = 1:strLength
     target{ii} = tarDims(1:4, ii)'; % Define targets
+    [centers{ii}(1), centers{ii}(2)] = RectCenter(target{ii});
 end
 
-% Set targets to draw
-% Screen('FillRect', window, 1, finalTarRect);
-% Screen('FrameRect', window, .5, finalTarRect, 5);
+% Create cell array for card detection
+cardOn = cell(2, strLength);
 
-%Assign each target an identity
-% idTargets;
+% Set to false
+for ii = 1:(2*strLength)
+    cardOn{ii} = 0;
+end
+

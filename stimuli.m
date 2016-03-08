@@ -15,11 +15,12 @@
     %Row 2: click counter 
     %Row 3: [start time, stop time] for each click
     %Row 4: destination cards, in order placed
-
-
+% 9: Card last on target, moved?
+%10: Original card coordinates for reset
+%11: Target centers
 
 %Create cell array for string assignments
-stringId = cell(90, 6);
+stringId = cell(90, 10);
 
 %Import string names
 stringFeed = textscan(fopen('alphabetic.txt', 'r'), '%s');
@@ -36,8 +37,9 @@ for ii = 1:90
         stringId{ii,4} = [stringId{ii,4}, stringId{ii,3}(ll)];
         end
     end
-    [stringId{ii,5}, stringId{ii,6}] = tarRect(stringId{ii,2},screenXpixels,yCenter); %Set target coordinates & ID
-    [stringId{ii,7}, stringId{ii,8}] = cardGen(screenXpixels,yCenter); %Set cards
+    [stringId{ii,5}, stringId{ii,6}, stringId{ii,9}, stringId{ii,11}] = ...
+        tarRect(stringId{ii,2},screenXpixels,yCenter); %Set target coordinates & ID
+    [stringId{ii,7}, stringId{ii,10}, stringId{ii,8}] = cardGen(screenXpixels,yCenter); %Set cards
 end
 
 %Create truly random permutation of presentation order

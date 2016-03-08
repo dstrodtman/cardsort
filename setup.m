@@ -46,7 +46,6 @@ Screen('TextSize', window, 50);
 
 % Print prompt to window
 textString = 'Click mouse to begin'; % 'Touch screen to begin' in future
-
 DrawFormattedText(window, textString, 'center', 'center', 1);
 Screen('Flip', window);
 

@@ -1,4 +1,4 @@
-function [card, cardData] = cardGen(screenXpixels,yCenter)
+function [card, card2, cardData] = cardGen(screenXpixels,yCenter)
 
 %Presently creates 12 unique cards to be sorted and assigns original card
 %coordinates.
@@ -58,6 +58,4 @@ for ii = 1:12
     cardData{4, ii} = nan(1,10); % create empty array for 10 target places
 end
 
-% Set cards to draw
-% Screen('FillRect', window, 1, finalCard);
-% Screen('FrameRect', window, .5, finalCard, 5);
+card2 = card;
