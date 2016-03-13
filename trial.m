@@ -1,7 +1,4 @@
-%This is the first test for establishing that I can, in fact, move the
-%cards that I am drawing. Eventually functionality to include detecting
-%whether or not card center is inside a target rectangle. If so, rect will
-%be highlighted (maybe?) and card will snap to rect center.
+% Basic frame for each trial
 
 % Set initial mouse position to center of screen (where no stimuli are)
 SetMouse(xCenter, yCenter, window);
@@ -13,23 +10,24 @@ offsetSet = 0;
 highlight = 1;
 
 % Draw stimuli to screen
-Screen('FillRect', window, 1, stringId{this,5});
-Screen('FrameRect', window, .5, stringId{this,5}, 5);
-Screen('FillRect', window, 1, cell2mat(stringId{this,7}')');
-Screen('FrameRect', window, .5, cell2mat(stringId{this,7}')', 5);
+Screen('FillRect', window, 1, tPosit);
+Screen('FrameRect', window, .5, tPosit, 5);
+Screen('FillRect', window, 1, cell2mat(cPosit')');
+Screen('FrameRect', window, .5, cell2mat(cPosit')', 5);
 
 % Draw symbols?
 letterDraw;
+cardSymbols;
 
 % Set initial active target to the left
 activeTar = 1;
 
 % Highlight active target
-Screen('FrameRect', window, [0 1 0], stringId{this,6}{activeTar}, 5);
+Screen('FrameRect', window, [0 1 0], tIndie{activeTar}, 5);
 
 % Sync us and get a time stamp
 vbl = Screen('Flip', window);
-waitframes = 1;
+waitframes = 2; %Provides time for letter draw
 
 % Loop the animation until a key is pressed
 while ~complete || ~proceed
@@ -39,15 +37,21 @@ while ~complete || ~proceed
 
     % See if the mouse cursor is inside a card
     for ii = 1:12
-        while IsInRect(mx, my, stringId{this,7}{ii})
+        while IsInRect(mx, my, cPosit{ii})
             cardnum = ii;
-            selected = stringId{this,7}{ii};
+            selected = cPosit{ii};
             activeCard;
         end
     end
     
     % Proceed to next
     if complete && IsInRect(mx, my, [0, 0, 100, 100]) && sum(buttons) > 0
+        for ii = 1:12
+            stringId{this,8}{2,ii} = clicks{ii}; % record clicks
+        end
+        for ii = 1:tLength
+            stringId{this,9}{1,ii} = cSensor{1,ii}(1); % record final card
+        end
         proceed = 1;
     end
 end

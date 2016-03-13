@@ -1,12 +1,16 @@
 try
     setup; % Debugged, solid -- needs edit after touchscreen
     stimuli; % Should pre-establish every stimuli for the entire test
-    for trial = 1:3 %Just testing
+    begin; % Display begin message
+    for trialNum = 1:3 %Just testing
         %Set this as the index
-        this = presentOrder(trial);
+        this = presentOrder(trialNum);
+%         this = trialNum; %Testing!
+        stringId{this,12} = trialNum; %record presentation order
+        varAssign;
         complete = 0;
         proceed = 0;
-        moveCard;
+        trial; %Initiate trial
     end
 catch ME
     sca;

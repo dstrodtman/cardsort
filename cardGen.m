@@ -1,4 +1,7 @@
-function [card, card2, cardData] = cardGen(screenXpixels,yCenter)
+% All of this will be fixed once final presentation hardware is confirmed
+
+
+function [card, cardData, cCentr] = cardGen(screenXpixels,yCenter)
 
 %Presently creates 12 unique cards to be sorted and assigns original card
 %coordinates.
@@ -36,6 +39,15 @@ cardShift = repmat([cardXshift; cardYshift], [2, 12]);
 % Adjust card coordinates to bottom half of screen.
 finalCard = cardMat + cardShift;
 
+% Creat cell array for center data
+cCentr = cell(1,12);
+
+% Find centers
+for ii = 1:12
+    [cCentr{ii}(1), cCentr{ii}(2)] = RectCenter(finalCard(1:4,ii));
+end
+
+
 %Make cards unique entities for movement commands and data tracking. Will
 %later communicate with stimuli info.
 
@@ -57,5 +69,3 @@ for ii = 1:12
     cardData{3, ii} = nan(20,2); % create empty array for 20 clicks times
     cardData{4, ii} = nan(1,10); % create empty array for 10 target places
 end
-
-card2 = card;
