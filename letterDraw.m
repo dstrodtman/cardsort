@@ -1,74 +1,34 @@
-% Cell contents (by column)
-% 1: String names
-% 2: String lengths
-% 3: Symbol cells
-% 4: Duplicate symbols
-% 5: Target coordinates
-% 6: Target number ID
-% 7: Original card coordinates
-% 8: Array of cells for card data
-    %Column corresponds to card number
-    %Row 1: card symbol
-    %Row 2: click counter 
-    %Row 3: [start time, stop time] for each click
-    %Row 4: destination cards, in order placed
-% 9: Card last on target, moved?
-%10: Original card coordinates for reset
-%11: Target centers
+%Eliminate for loop by using multiple if statements...
 
+% Symbols for targets
 if stringId{this,2} == 3
-    DrawFormattedText(window, stringId{this,3}{1}, ... 
-        stringId{this,11}{1}(1), stringId{this,11}{1}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{2}, ... 
-        stringId{this,11}{2}(1), stringId{this,11}{2}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{3}, ... 
-        stringId{this,11}{3}(1), stringId{this,11}{3}(2), 0);
+    DrawFormattedText(window, tSymbol{1}, tCent{1}(1), tCent{1}(2), 0);
+    DrawFormattedText(window, tSymbol{2}, tCent{2}(1), tCent{2}(2), 0);
+    DrawFormattedText(window, tSymbol{3}, tCent{3}(1), tCent{3}(2), 0);
 elseif stringId{this,2} == 4
-    DrawFormattedText(window, stringId{this,3}{1}, ... 
-        stringId{this,11}{1}(1), stringId{this,11}{1}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{2}, ... 
-        stringId{this,11}{2}(1), stringId{this,11}{2}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{3}, ... 
-        stringId{this,11}{3}(1), stringId{this,11}{3}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{4}, ... 
-        stringId{this,11}{4}(1), stringId{this,11}{4}(2), 0);
+    DrawFormattedText(window, tSymbol{1}, tCent{1}(1), tCent{1}(2), 0);
+    DrawFormattedText(window, tSymbol{2}, tCent{2}(1), tCent{2}(2), 0);
+    DrawFormattedText(window, tSymbol{3}, tCent{3}(1), tCent{3}(2), 0);
+    DrawFormattedText(window, tSymbol{4}, tCent{4}(1), tCent{4}(2), 0);
 elseif stringId{this,2} == 5
-    DrawFormattedText(window, stringId{this,3}{1}, ... 
-        stringId{this,11}{1}(1), stringId{this,11}{1}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{2}, ... 
-        stringId{this,11}{2}(1), stringId{this,11}{2}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{3}, ... 
-        stringId{this,11}{3}(1), stringId{this,11}{3}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{4}, ... 
-        stringId{this,11}{4}(1), stringId{this,11}{4}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{5}, ... 
-        stringId{this,11}{5}(1), stringId{this,11}{5}(2), 0);
+    DrawFormattedText(window, tSymbol{1}, tCent{1}(1), tCent{1}(2), 0);
+    DrawFormattedText(window, tSymbol{2}, tCent{2}(1), tCent{2}(2), 0);
+    DrawFormattedText(window, tSymbol{3}, tCent{3}(1), tCent{3}(2), 0);
+    DrawFormattedText(window, tSymbol{4}, tCent{4}(1), tCent{4}(2), 0);
+    DrawFormattedText(window, tSymbol{5}, tCent{5}(1), tCent{5}(2), 0);
 elseif stringId{this,2} == 6
-    DrawFormattedText(window, stringId{this,3}{1}, ... 
-        stringId{this,11}{1}(1), stringId{this,11}{1}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{2}, ... 
-        stringId{this,11}{2}(1), stringId{this,11}{2}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{3}, ... 
-        stringId{this,11}{3}(1), stringId{this,11}{3}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{4}, ... 
-        stringId{this,11}{4}(1), stringId{this,11}{4}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{5}, ... 
-        stringId{this,11}{5}(1), stringId{this,11}{5}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{6}, ... 
-        stringId{this,11}{6}(1), stringId{this,11}{6}(2), 0);
+    DrawFormattedText(window, tSymbol{1}, tCent{1}(1), tCent{1}(2), 0);
+    DrawFormattedText(window, tSymbol{2}, tCent{2}(1), tCent{2}(2), 0);
+    DrawFormattedText(window, tSymbol{3}, tCent{3}(1), tCent{3}(2), 0);
+    DrawFormattedText(window, tSymbol{4}, tCent{4}(1), tCent{4}(2), 0);
+    DrawFormattedText(window, tSymbol{5}, tCent{5}(1), tCent{5}(2), 0);
+    DrawFormattedText(window, tSymbol{6}, tCent{6}(1), tCent{6}(2), 0);
 elseif stringId{this,2} == 7
-    DrawFormattedText(window, stringId{this,3}{1}, ... 
-        stringId{this,11}{1}(1), stringId{this,11}{1}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{2}, ... 
-        stringId{this,11}{2}(1), stringId{this,11}{2}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{3}, ... 
-        stringId{this,11}{3}(1), stringId{this,11}{3}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{4}, ... 
-        stringId{this,11}{4}(1), stringId{this,11}{4}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{5}, ... 
-        stringId{this,11}{5}(1), stringId{this,11}{5}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{6}, ... 
-        stringId{this,11}{6}(1), stringId{this,11}{6}(2), 0);
-    DrawFormattedText(window, stringId{this,3}{7}, ... 
-        stringId{this,11}{7}(1), stringId{this,11}{7}(2), 0);
+    DrawFormattedText(window, tSymbol{1}, tCent{1}(1), tCent{1}(2), 0);
+    DrawFormattedText(window, tSymbol{2}, tCent{2}(1), tCent{2}(2), 0);
+    DrawFormattedText(window, tSymbol{3}, tCent{3}(1), tCent{3}(2), 0);
+    DrawFormattedText(window, tSymbol{4}, tCent{4}(1), tCent{4}(2), 0);
+    DrawFormattedText(window, tSymbol{5}, tCent{5}(1), tCent{5}(2), 0);
+    DrawFormattedText(window, tSymbol{6}, tCent{6}(1), tCent{6}(2), 0);
+    DrawFormattedText(window, tSymbol{7}, tCent{7}(1), tCent{7}(2), 0);
 end

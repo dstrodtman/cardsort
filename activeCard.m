@@ -1,3 +1,5 @@
+% Triggers when card is selected
+
 % Set snap
 snap = 0;
 
@@ -17,13 +19,13 @@ if sum(buttons) > 0 && offsetSet == 0
     dy = my - cy;
     offsetSet = 1;
     % Increment click counter
-    stringId{this,8}{2, cardnum} = stringId{this,8}{2, cardnum} + 1;
-    Click = stringId{this,8}{2, cardnum};
+    clicks{cardnum} = clicks{cardnum} + 1;
+    Click = clicks{cardnum};
     %Record start time
-    stringId{this,8}{3, cardnum}(Click, 1) = GetSecs;
+    stringId{this,8}{3, cardnum}(Click) = GetSecs;
     for ii = 1:activeTar
-        if IsInRect(sx, sy, stringId{this,6}{ii})
-            stringId{this,9}{2,ii} = 1;
+        if IsInRect(sx, sy, tIndie{ii})
+            cSensor{2,ii} = 1;
         end
     end
 end
@@ -41,26 +43,28 @@ if sum(buttons) <= 0 %fixes GPU complaints
     if offsetSet == 1
         %Record end time
         stringId{this,8}{3, cardnum}(Click, 2) = GetSecs;
-        if IsInRect(sx, sy, stringId{this,6}{activeTar}) && complete == 0
-            [tcx, tcy] = RectCenter(stringId{this,6}{activeTar});
+        if IsInRect(sx, sy, tIndie{activeTar}) && complete == 0
+            [tcx, tcy] = RectCenter(tIndie{activeTar});
             snap = 1;
             stringId{this,8}{4,cardnum}(1,Click) = activeTar;
-            stringId{this,9}{activeTar} = cardnum;
-            stringId{this,9}{2,activeTar} = 0;
-        end
+            cSensor{1,activeTar} = cardnum;
+            cSensor{2,activeTar} = 0;
         % Set up snap for previous targets
-        if activeTar > 1 && snap == 0
+        elseif snap == 0
             for ii = 1:(activeTar)
-                if IsInRect(sx, sy, stringId{this,6}{ii})
-                    [tcx, tcy] = RectCenter(stringId{this,6}{ii});
+                if IsInRect(sx, sy, tIndie{ii})
+                    [tcx, tcy] = RectCenter(tIndie{ii});
                     snap = 2;
-                    stringId{this,8}{4,cardnum}(1,Click) = ii;
-                    if stringId{this,9}{1,ii} && stringId{this,9}{2,ii} == 0
-                        stringId{this,7}{stringId{this,9}{1,ii}} = stringId{this,10}{stringId{this,9}{1,ii}};
+                    stringId{this,8}{4,cardnum}(1,Click) = ii; %fix this, add again to next section to reassign on reset
+                    if cSensor{1,ii} && cSensor{2,ii} == 0
+                        cPosit{cSensor{1,ii}} = cReset{cSensor{1,ii}};
+                        cCent{cSensor{1,ii}}(1) = cResetX{cSensor{1,ii}};
+                        cCent{cSensor{1,ii}}(2) = cResetY{cSensor{1,ii}};
+                        cSensor{1,ii} = cardnum; 
+                        cSensor{2,ii} = 0;
                     end
-                    %Add card clearing functionality
-                    stringId{this,9}{1,ii} = cardnum;
-                    stringId{this,9}{2,ii} = 0;
+                else
+                    stringId{this,8}{4,cardnum}(1,Click) = 0;       
                 end
             end
         end
@@ -70,35 +74,43 @@ end
 
 switch snap
     case 1
-        stringId{this,7}{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
+        cPosit{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
         snap = 0;
-        if activeTar < stringId{this,2}
+        cCent{cardnum}(1) = tcx;
+        cCent{cardnum}(2) = tcy;
+        if activeTar < tLength
             activeTar = activeTar + 1;
         else
             highlight = 0;
             complete = 1;
         end
     case 2
-        stringId{this,7}{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
+        cPosit{cardnum} = CenterRectOnPoint(selected, tcx, tcy);
+        cCent{cardnum}(1) = tcx;
+        cCent{cardnum}(2) = tcy;
         snap = 0;
     otherwise
         % Center the rectangle on its new screen position
-        stringId{this,7}{cardnum} = CenterRectOnPointd(selected, sx, sy);
+        cPosit{cardnum} = CenterRectOnPointd(selected, sx, sy);
+        cCent{cardnum}(1) = sx;
+        cCent{cardnum}(2) = sy;
 end
 
 % Draw to the screen
-Screen('FillRect', window, 1, stringId{this,5});
-Screen('FrameRect', window, .5, stringId{this,5}, 5);
+Screen('FillRect', window, 1, tPosit);
+Screen('FrameRect', window, .5, tPosit, 5);
 % Draw symbols (please?)
 letterDraw;
 
-Screen('FillRect', window, 1, cell2mat(stringId{this,7}')');
-Screen('FrameRect', window, .5, cell2mat(stringId{this,7}')', 5);
+Screen('FillRect', window, 1, cell2mat(cPosit')');
+Screen('FrameRect', window, .5, cell2mat(cPosit')', 5);
+%Draw card symbols
+cardSymbols;
 
 % Highlight active target
 switch highlight
     case 1
-        Screen('FrameRect', window, [0 1 0], stringId{this,5}(1:4, activeTar), 5);
+        Screen('FrameRect', window, [0 1 0], tPosit(1:4, activeTar), 5);
 end
 
 if complete
@@ -107,8 +119,9 @@ if complete
 end
 
 % Draw active card again to ensure it is on top
-Screen('FillRect', window, 1, stringId{this,7}{cardnum});
-Screen('FrameRect', window, .5, stringId{this,7}{cardnum}, 5);
+Screen('FillRect', window, 1, cPosit{cardnum});
+Screen('FrameRect', window, .5, cPosit{cardnum}, 5);
+DrawFormattedText(window, cSymbol(cardnum), cCent{cardnum}(1), cCent{cardnum}(2), 0);
 
 % Flip to the screen
 vbl  = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
